@@ -1,16 +1,23 @@
 package com.veljkovracarevic.portfolio.service.impl;
 
 import com.veljkovracarevic.portfolio.dto.ProjectDto;
+import com.veljkovracarevic.portfolio.dto.TechnologyDto;
+import com.veljkovracarevic.portfolio.dto.response.ProjectResponse;
 import com.veljkovracarevic.portfolio.exceptions.ProjectNotFoundException;
 import com.veljkovracarevic.portfolio.models.Project;
+import com.veljkovracarevic.portfolio.models.Technology;
 import com.veljkovracarevic.portfolio.repository.ProjectRepository;
 import com.veljkovracarevic.portfolio.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ProjectServiceImpl implements ProjectService {
 
     private ProjectRepository projectRepository;
@@ -22,13 +29,41 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto createProject(ProjectDto projectDto) {
-        return null;
+        Project project = new Project();
+
+        project.setName(projectDto.getName());
+        project.setLogoPath(projectDto.getLogoPath());
+        project.setLink(projectDto.getLink());
+        project.setDescription(projectDto.getDescription());
+
+        Project newProject = projectRepository.save(project);
+
+        ProjectDto projectResponse = new ProjectDto();
+        projectResponse.setId(newProject.getId());
+        projectResponse.setName(newProject.getName());
+        projectResponse.setLink(newProject.getLink());
+        projectResponse.setLogoPath(newProject.getLogoPath());
+        projectResponse.setDescription(newProject.getDescription());
+        return projectResponse;
     }
 
     @Override
-    public List<ProjectDto> getAllProjects() {
-        List<Project> projects = projectRepository.findAll();
-        return projects.stream().map(proj -> mapToDto(proj)).collect(Collectors.toList());
+    public ProjectResponse getAllProjects(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Project> projects = projectRepository.findAll(pageable);
+        List<Project> listOfProjects = projects.getContent();
+        List<ProjectDto> content = listOfProjects.stream().map(proj -> mapToDto(proj)).collect(Collectors.toList());
+
+        ProjectResponse projectResponse = new ProjectResponse();
+        projectResponse.setContent(content);
+        projectResponse.setPageNo(projects.getNumber());
+        projectResponse.setPageSize(projects.getSize());
+        projectResponse.setTotalElements(projects.getTotalElements());
+        projectResponse.setTotalPages(projects.getTotalPages());
+        projectResponse.setLast(projects.isLast());
+
+        return projectResponse;
+
     }
 
     @Override

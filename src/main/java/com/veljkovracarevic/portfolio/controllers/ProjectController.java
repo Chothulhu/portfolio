@@ -2,6 +2,7 @@ package com.veljkovracarevic.portfolio.controllers;
 
 import com.veljkovracarevic.portfolio.dto.ProjectDto;
 import com.veljkovracarevic.portfolio.dto.TechnologyDto;
+import com.veljkovracarevic.portfolio.dto.response.ProjectResponse;
 import com.veljkovracarevic.portfolio.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,10 @@ public class ProjectController {
     }
 
     @GetMapping("project")
-    public ResponseEntity<List<ProjectDto>> getAllProjects(){
-        return new ResponseEntity<>(projectService.getAllProjects(), HttpStatus.OK);
+    public ResponseEntity<ProjectResponse> getAllProjects(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+        return new ResponseEntity<>(projectService.getAllProjects(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("project/{id}")

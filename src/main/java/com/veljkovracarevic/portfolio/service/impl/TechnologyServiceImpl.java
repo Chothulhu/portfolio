@@ -8,10 +8,12 @@ import com.veljkovracarevic.portfolio.models.Technology;
 import com.veljkovracarevic.portfolio.repository.TechnologyRepository;
 import com.veljkovracarevic.portfolio.service.TechnologyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class TechnologyServiceImpl implements TechnologyService {
 
     private TechnologyRepository technologyRepository;

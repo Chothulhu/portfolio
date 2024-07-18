@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table( name = "projects" )
+@Table(name = "projects")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,8 @@ public class Project {
     private String link;
     private String description;
 
-    /*@OneToMany(mappedBy = "technology", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Technology> technologies = new ArrayList<Technology>();*/
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Technology> technologies = new ArrayList<Technology>();
+
 
 }
